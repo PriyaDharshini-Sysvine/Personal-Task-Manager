@@ -4,7 +4,7 @@ export function TaskFilter() {
     var { filterTasks } = useTaskManager();
 
     function onFilterChange(event) {
-        if (event == undefined)
+        if (event === undefined)
             return;
         filterTasks(event.target.value);
     }

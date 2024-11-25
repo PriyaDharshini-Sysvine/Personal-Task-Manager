@@ -1,5 +1,6 @@
 import { useTaskManager } from "./TaskContext";
 import { TaskFilter } from "./TaskFilter";
+import { TaskAddForm } from "./TaskForm";
 
 function TaskList() {
 
@@ -8,6 +9,8 @@ function TaskList() {
     return (
         <>
             <TaskFilter />
+
+            <TaskAddForm />
 
             <div className="container">
                 {filteredTasks.map((task) => (

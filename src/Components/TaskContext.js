@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useState, useCallback } from 'react';
+import React, { createContext, useContext, useReducer, useState, useCallback, useRef } from 'react';
 
 const TaskContext = createContext();
 
@@ -53,6 +53,23 @@ export const TaskProvider = ({ children }) => {
         }
     ]);
 
+    const taskTitleRef = useRef(null);
+
+    const [showModal, setShowModal] = useState(false);
+
+    const handleAddTask = (newTask) => {
+        if (newTask.title.trim()) {            
+            mockTasks.concat(newTask);
+            taskTitleRef.current.value = '';
+            newTask.taskDescRef.current.value = '';
+            taskTitleRef.current.style.borderColor = '';
+            setShowModal(false); // Close modal
+            filterTasks("All");
+        } else {
+            taskTitleRef.current.style.borderColor = 'red';
+        }
+    };
+
     var [filteredTasks, setFilteredTasks] = useState(tasks);
 
     const filterTasks = useCallback((filterVal) => {
@@ -72,7 +89,7 @@ export const TaskProvider = ({ children }) => {
     const taskReducer = useCallback((data = null, action, id = null) => {
         switch (action) {
             case 'ADD':
-                mockTasks.concat(data);
+                handleAddTask(data);
             case 'REMOVE':
                 mockTasks = tasks.filter(x => x.id !== id)[0];
             case 'EDIT':
@@ -91,7 +108,7 @@ export const TaskProvider = ({ children }) => {
     var [mockTasks, dispatch] = useReducer(taskReducer, tasks);
 
     return (
-        <TaskContext.Provider value={{ mockTasks, dispatch, filteredTasks, filterTasks }}>
+        <TaskContext.Provider value={{ mockTasks, dispatch, filteredTasks, filterTasks, showModal, taskTitleRef }}>
             {children}
         </TaskContext.Provider>
     );
