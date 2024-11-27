@@ -53,15 +53,30 @@ export const TaskProvider = ({ children }) => {
         }
     ]);
 
+    const [selectedTask, setSelectedTask] = useState(null);
+
     const taskTitleRef = useRef(null);
 
     const [showModal, setShowModal] = useState(false);
 
     const handleAddTask = (newTask) => {
-        if (newTask.title.trim()) {            
+        if (newTask.title.trim()) {
             mockTasks.concat(newTask);
             taskTitleRef.current.value = '';
             newTask.taskDescRef.current.value = '';
+            taskTitleRef.current.style.borderColor = '';
+            setShowModal(false); // Close modal
+            filterTasks("All");
+        } else {
+            taskTitleRef.current.style.borderColor = 'red';
+        }
+    };
+
+    const handleEditTask = (task) => {
+        if (task.title.trim()) {
+            mockTasks.filter(x => x.id === id)[0] = data;
+            taskTitleRef.current.value = '';
+            task.taskDescRef.current.value = '';
             taskTitleRef.current.style.borderColor = '';
             setShowModal(false); // Close modal
             filterTasks("All");
@@ -93,7 +108,8 @@ export const TaskProvider = ({ children }) => {
             case 'REMOVE':
                 mockTasks = tasks.filter(x => x.id !== id)[0];
             case 'EDIT':
-                mockTasks.filter(x => x.id === id)[0] = data;
+                selectedTask(mockTasks.filter(x => x.id === id)[0]);
+                handleEditTask();
             case 'COMPLETE':
                 mockTasks.map(obj =>
                     obj.id === id ? { ...obj, is_completed: true } : obj
@@ -108,7 +124,7 @@ export const TaskProvider = ({ children }) => {
     var [mockTasks, dispatch] = useReducer(taskReducer, tasks);
 
     return (
-        <TaskContext.Provider value={{ mockTasks, dispatch, filteredTasks, filterTasks, showModal, taskTitleRef }}>
+        <TaskContext.Provider value={{ mockTasks, dispatch, filteredTasks, filterTasks, showModal, taskTitleRef, selectedTask }}>
             {children}
         </TaskContext.Provider>
     );

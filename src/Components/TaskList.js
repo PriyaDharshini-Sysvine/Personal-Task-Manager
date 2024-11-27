@@ -12,6 +12,8 @@ function TaskList() {
 
             <TaskAddForm />
 
+            <TaskEditForm />
+
             <div className="container">
                 {filteredTasks.map((task) => (
                     <div className="item" key={task.id}>
